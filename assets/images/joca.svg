@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <circle cx="100" cy="100" r="90" fill="#FFD966" stroke="#B45F06" stroke-width="4"/>
+  <!-- Olhos -->
+  <circle cx="65" cy="85" r="12" fill="white"/>
+  <circle cx="135" cy="85" r="12" fill="white"/>
+  <circle cx="68" cy="88" r="6" fill="black"/>
+  <circle cx="138" cy="88" r="6" fill="black"/>
+  <!-- Pupilas brilho -->
+  <circle cx="70" cy="86" r="2" fill="white"/>
+  <circle cx="140" cy="86" r="2" fill="white"/>
+  <!-- Sorriso -->
+  <path d="M70 130 Q100 160 130 130" stroke="#B45F06" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <!-- Nariz -->
+  <ellipse cx="100" cy="105" rx="8" ry="5" fill="#E69138"/>
+</svg>

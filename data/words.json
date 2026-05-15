@@ -1,0 +1,29 @@
+{
+  "mundoB": {
+    "nome": "Mundo B",
+    "inimigo": "bat.svg",
+    "fases": {
+      "1": ["BA", "BE", "BI", "BO", "BU"],
+      "2": ["BOLA", "BEBE", "BICO", "BOCA", "BUCHA"],
+      "3": ["BATOM", "BANANA", "BICICLETA", "BONECA", "BURRO"]
+    }
+  },
+  "mundoC": {
+    "nome": "Mundo C",
+    "inimigo": "snake.svg",
+    "fases": {
+      "1": ["CA", "CE", "CI", "CO", "CU"],
+      "2": ["CASA", "CEREJA", "CINCO", "COCO", "CURSO"],
+      "3": ["CAMINHO", "CELULAR", "CIGARRA", "COELHO", "CURSO"]
+    }
+  },
+  "mundoD": {
+    "nome": "Mundo D",
+    "inimigo": "dragon.svg",
+    "fases": {
+      "1": ["DA", "DE", "DI", "DO", "DU"],
+      "2": ["DADO", "DEDO", "DINHEIRO", "DORME", "DUCHA"],
+      "3": ["DENTISTA", "DETETIVE", "DIA", "DOMINGO", "DUPLO"]
+    }
+  }
+}

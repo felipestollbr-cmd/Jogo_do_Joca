@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <ellipse cx="100" cy="100" rx="40" ry="25" fill="#4A2F1A"/>
+  <!-- Asas -->
+  <path d="M60 100 L20 60 L50 90 L30 40 L70 80 Z" fill="#3E2723"/>
+  <path d="M140 100 L180 60 L150 90 L170 40 L130 80 Z" fill="#3E2723"/>
+  <!-- Olhos -->
+  <circle cx="80" cy="95" r="6" fill="red"/>
+  <circle cx="120" cy="95" r="6" fill="red"/>
+  <circle cx="80" cy="95" r="2" fill="white"/>
+  <circle cx="120" cy="95" r="2" fill="white"/>
+</svg>
