@@ -1,16 +1,16 @@
+// game.js - Versão com feedback apenas por voz (sem arquivos de som)
+
 let palavrasData = null;
 let mundoAtualId = null;
 let faseAtualNum = 1;
 let palavrasFase = [];
 let palavrasRestantes = [];
 let pontosFase = 0;
-let inimigoImg = null;
 
 async function carregarPalavras() {
     const response = await fetch('data/words.json');
     palavrasData = await response.json();
-    carregarMundos(); // do worlds.js
-    // Restaurar último mundo
+    carregarMundos(); // função do worlds.js
     const ultimoMundo = localStorage.getItem('ultimo_mundo');
     if (ultimoMundo && mundosDisponiveis.find(m => m.id === ultimoMundo)?.desbloqueado) {
         selecionarMundo(ultimoMundo);
@@ -28,6 +28,7 @@ function iniciarFase() {
     const faseKey = faseAtualNum.toString();
     if (!fases[faseKey]) {
         exibirMensagem(`🎉 Parabéns! Você completou o ${palavrasData[mundoAtualId].nome}! 🎉`);
+        falar(`Parabéns! Você completou o mundo ${palavrasData[mundoAtualId].nome}`);
         return false;
     }
     palavrasFase = [...fases[faseKey]];
@@ -35,20 +36,42 @@ function iniciarFase() {
     embaralharArray(palavrasRestantes);
     
     // Atualiza imagem do inimigo
-    inimigoImg = palavrasData[mundoAtualId].inimigo;
-    document.getElementById('inimigoImg').src = `assets/images/${inimigoImg}`;
-    document.getElementById('inimigoImg').alt = `Inimigo ${palavrasData[mundoAtualId].nome}`;
+    const inimigoImg = palavrasData[mundoAtualId].inimigo;
+    const imgElement = document.getElementById('inimigoImg');
+    if (imgElement) {
+        imgElement.src = `assets/images/${inimigoImg}`;
+        imgElement.alt = `Inimigo ${palavrasData[mundoAtualId].nome}`;
+    }
     
     renderizarPalavras();
     atualizarUI();
-    falar(`Fase ${faseAtualNum} do ${palavrasData[mundoAtualId].nome}. Encontre a palavra correta.`);
+    falar(`Fase ${faseAtualNum} do mundo ${palavrasData[mundoAtualId].nome}. Encontre a palavra correta.`);
     return true;
+}
+
+function renderizarPalavras() {
+    const grid = document.getElementById('palavrasGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    palavrasRestantes.forEach(palavra => {
+        const div = document.createElement('div');
+        div.className = 'palavra';
+        div.textContent = palavra;
+        div.setAttribute('tabindex', '0');
+        div.setAttribute('data-palavra', palavra);
+        div.addEventListener('click', () => verificarPalavra(palavra, div));
+        grid.appendChild(div);
+    });
+    // Atualiza navegação por foco (para controle remoto)
+    if (typeof atualizarElementosFocaveis === 'function') {
+        atualizarElementosFocaveis();
+    }
 }
 
 function verificarPalavra(palavra, elemento) {
     const palavraCorreta = palavrasFase[0];
     if (palavra === palavraCorreta) {
-        document.getElementById('somAcerto').play();
+        // ACERTOU
         pontosFase++;
         atualizarUI();
         falar(`Muito bem! ${palavra} está correto!`);
@@ -59,24 +82,30 @@ function verificarPalavra(palavra, elemento) {
         
         if (palavrasFase.length === 0) {
             // Fase completa
-            falar("Fase concluída!");
-            completarFase(mundoAtualId, faseAtualNum);
-            if (faseAtualNum < Object.keys(palavrasData[mundoAtualId].fases).length) {
+            falar("Fase concluída! Você é muito inteligente.");
+            completarFase(mundoAtualId, faseAtualNum); // função do worlds.js
+            const totalFases = Object.keys(palavrasData[mundoAtualId].fases).length;
+            if (faseAtualNum < totalFases) {
                 document.getElementById('btnProximaFase').style.display = 'block';
             } else {
                 document.getElementById('btnProximaFase').style.display = 'none';
-                exibirMensagem("🏆 Mundo completo! Desbloqueou novo mundo? 🏆");
+                exibirMensagem("🏆 Mundo completo! Desbloqueou um novo mundo? 🏆");
+                falar(`Parabéns! Você completou todas as fases do mundo ${palavrasData[mundoAtualId].nome}`);
             }
             salvarProgressoMundo();
         } else {
             renderizarPalavras();
         }
     } else {
-        document.getElementById('somErro').play();
-        falar(`Ops! ${palavra} não é. Tente ${palavraCorreta}`);
+        // ERROU
+        falar(`Ops! A palavra ${palavra} não é a correta. Tente ${palavraCorreta}`);
         exibirMensagem(`❌ Tente de novo! A palavra é ${palavraCorreta} ❌`);
-        elemento.style.transform = 'shake 0.3s';
-        setTimeout(() => elemento.style.transform = '', 300);
+        if (elemento) {
+            elemento.style.transform = 'shake 0.3s';
+            setTimeout(() => {
+                if (elemento) elemento.style.transform = '';
+            }, 300);
+        }
     }
 }
 
@@ -94,29 +123,29 @@ function salvarProgressoMundo() {
 }
 
 function atualizarUI() {
-    document.getElementById('nivel').textContent = `${palavrasData[mundoAtualId].nome} - Fase ${faseAtualNum}`;
-    document.getElementById('pontos').textContent = pontosFase;
+    const nivelSpan = document.getElementById('nivel');
+    const pontosSpan = document.getElementById('pontos');
+    if (nivelSpan) {
+        nivelSpan.textContent = `${palavrasData[mundoAtualId].nome} - Fase ${faseAtualNum}`;
+    }
+    if (pontosSpan) {
+        pontosSpan.textContent = pontosFase;
+    }
 }
 
-// Adicione esta função para exibir seleção de mundos na tela inicial
-function exibirSelecaoMundos() {
-    const container = document.getElementById('worldsContainer');
-    if (!container) return;
-    container.innerHTML = '';
-    mundosDisponiveis.forEach(mundo => {
-        const btn = document.createElement('button');
-        btn.className = 'world-btn';
-        btn.innerHTML = `<img src="assets/images/${mundo.desbloqueado ? mundo.inimigo : 'locked.svg'}" width="80"><br>${mundo.nome}`;
-        btn.disabled = !mundo.desbloqueado;
-        btn.onclick = () => {
-            if (selecionarMundo(mundo.id)) {
-                document.getElementById('worldSelection').style.display = 'none';
-                document.getElementById('gameArea').style.display = 'block';
-                iniciarFase();
-            } else {
-                falar("Mundo trancado");
-            }
-        };
-        container.appendChild(btn);
-    });
+function exibirMensagem(msg) {
+    const msgDiv = document.getElementById('mensagem');
+    if (msgDiv) {
+        msgDiv.textContent = msg;
+        setTimeout(() => {
+            if (msgDiv.textContent === msg) msgDiv.textContent = '';
+        }, 2500);
+    }
+}
+
+function embaralharArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
 }
