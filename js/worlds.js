@@ -1,5 +1,4 @@
 // worlds.js - Todos os mundos desbloqueados
-
 let mundosDisponiveis = [];
 let mundoAtual = null;
 let faseAtualDoMundo = 1;
@@ -57,10 +56,7 @@ function exibirSelecaoMundos() {
         const btn = document.createElement('button');
         btn.className = 'world-btn';
         btn.innerHTML = `
-            <img src="assets/images/${mundo.inimigo}" 
-                 width="80" height="80" 
-                 alt="${mundo.nome}"
-                 onerror="this.src='assets/images/locked.svg'">
+            <img src="assets/images/${mundo.inimigo}" width="80" height="80" alt="${mundo.nome}" onerror="this.src='assets/images/locked.svg'">
             <br>
             <span>${mundo.nome}</span>
         `;

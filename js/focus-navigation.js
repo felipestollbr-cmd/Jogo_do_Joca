@@ -1,9 +1,9 @@
-// Navegação por controle remoto (setas e Enter)
+// focus-navigation.js - Navegação por setas e Enter
 let elementosFocaveis = [];
 let indiceFocado = 0;
 
 function atualizarElementosFocaveis() {
-    elementosFocaveis = Array.from(document.querySelectorAll('.palavra, .btn-proxima'));
+    elementosFocaveis = Array.from(document.querySelectorAll('.palavra, .btn-proxima, .world-btn'));
     if (elementosFocaveis.length > 0) {
         elementosFocaveis[0].focus();
         indiceFocado = 0;
@@ -19,18 +19,19 @@ function focusNoElemento(index) {
 }
 
 window.addEventListener('keydown', (e) => {
-    // Seta direita ou esquerda para navegar
-    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         e.preventDefault();
-        const delta = (e.key === 'ArrowRight') ? 1 : -1;
+        let delta = 0;
+        if (e.key === 'ArrowRight') delta = 1;
+        if (e.key === 'ArrowLeft') delta = -1;
+        if (e.key === 'ArrowDown') delta = 1;
+        if (e.key === 'ArrowUp') delta = -1;
         focusNoElemento(indiceFocado + delta);
     }
-    
-    // Enter (OK do controle) dispara clique no elemento focado
     if (e.key === 'Enter') {
         e.preventDefault();
         const focado = document.activeElement;
-        if (focado && (focado.classList.contains('palavra') || focado.classList.contains('btn-proxima'))) {
+        if (focado && (focado.classList.contains('palavra') || focado.classList.contains('btn-proxima') || focado.classList.contains('world-btn'))) {
             focado.click();
         }
     }
@@ -41,6 +42,7 @@ const observer = new MutationObserver(() => {
     atualizarElementosFocaveis();
 });
 observer.observe(document.getElementById('palavrasGrid'), { childList: true, subtree: true });
+observer.observe(document.getElementById('worldsContainer'), { childList: true, subtree: true });
 
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(atualizarElementosFocaveis, 100);

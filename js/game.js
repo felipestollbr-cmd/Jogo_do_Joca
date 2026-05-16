@@ -1,5 +1,4 @@
 // game.js - Versão com feedback apenas por voz (sem arquivos de som)
-
 let palavrasData = null;
 let mundoAtualId = null;
 let faseAtualNum = 1;
@@ -130,22 +129,5 @@ function atualizarUI() {
     }
     if (pontosSpan) {
         pontosSpan.textContent = pontosFase;
-    }
-}
-
-function exibirMensagem(msg) {
-    const msgDiv = document.getElementById('mensagem');
-    if (msgDiv) {
-        msgDiv.textContent = msg;
-        setTimeout(() => {
-            if (msgDiv.textContent === msg) msgDiv.textContent = '';
-        }, 2500);
-    }
-}
-
-function embaralharArray(arr) {
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
     }
 }
